@@ -11,7 +11,9 @@ class UserService:
     # ----------------------------
     def get_all_users(self):
 
-        response = self.api.get(f"/admin/realms/{REALM}/users")
+        response = self.api.get(
+            f"/admin/realms/{REALM}/users"
+        )
 
         if response.status_code == 200:
             return response.json()
@@ -33,7 +35,7 @@ class UserService:
         return None
 
     # ----------------------------
-    # Search User By Username
+    # Search User
     # ----------------------------
     def search_user(self, username):
 
@@ -45,7 +47,34 @@ class UserService:
             return response.json()
 
         return []
-        # ----------------------------
+
+    # ----------------------------
+    # Create User
+    # ----------------------------
+    def create_user(self, username, email, password):
+
+        payload = {
+            "username": username,
+            "email": email,
+            "enabled": True,
+            "emailVerified": True,
+            "credentials": [
+                {
+                    "type": "password",
+                    "value": password,
+                    "temporary": False
+                }
+            ]
+        }
+
+        response = self.api.post(
+            f"/admin/realms/{REALM}/users",
+            payload
+        )
+
+        return response
+
+    # ----------------------------
     # Disable User
     # ----------------------------
     def disable_user(self, user_id):
@@ -78,27 +107,12 @@ class UserService:
         return response
 
     # ----------------------------
-    # Create User (JOINER)
+    # Delete User
     # ----------------------------
-    def create_user(self, username, email, password):
+    def delete_user(self, user_id):
 
-        payload = {
-            "username": username,
-            "email": email,
-            "enabled": True,
-            "emailVerified": True,
-            "credentials": [
-                {
-                    "type": "password",
-                    "value": password,
-                    "temporary": False
-                }
-            ]
-        }
-
-        response = self.api.post(
-            f"/admin/realms/{REALM}/users",
-            payload
+        response = self.api.delete(
+            f"/admin/realms/{REALM}/users/{user_id}"
         )
 
         return response

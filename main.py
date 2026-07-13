@@ -136,7 +136,22 @@ def main():
         # -----------------------------------
         elif choice == "5":
 
-            print("\nComing in Lab 10...")
+            user_id = input("\nEnter User ID : ")
+
+            response = users_service.delete_user(user_id)
+
+            if response.status_code == 204:
+
+                print("\nUser Deleted Successfully.")
+
+                AuditLogger.info(
+                    f"Deleted user '{user_id}'"
+                )
+
+            else:
+
+                print("\nFailed to delete user.")
+                print(response.text)
 
         # -----------------------------------
         # EXIT
