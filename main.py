@@ -7,7 +7,7 @@ from services.users import UserService
 def main():
 
     print("=" * 50)
-    print("KEYCLOAK JML SIMULATOR")
+    print("KEYCLOAK IAM SIMULATOR")
     print("=" * 50)
 
     # Login
@@ -37,9 +37,9 @@ def main():
 
         choice = input("\nSelect Option: ")
 
-        # ===========================
+        # -----------------------------------
         # LIST USERS
-        # ===========================
+        # -----------------------------------
         if choice == "1":
 
             users = users_service.get_all_users()
@@ -47,19 +47,16 @@ def main():
             print(f"\nTotal Users : {len(users)}\n")
 
             for user in users:
-
                 print("----------------------------")
+                print("ID       :", user.get("id"))
                 print("Username :", user.get("username"))
                 print("Email    :", user.get("email"))
                 print("Enabled  :", user.get("enabled"))
 
-        # ===========================
+        # -----------------------------------
         # CREATE USER
-        # ===========================
+        # -----------------------------------
         elif choice == "2":
-
-            print("\nCreate New User")
-            print("-" * 30)
 
             username = input("Username : ")
             email = input("Email    : ")
@@ -73,33 +70,71 @@ def main():
 
             if response.status_code == 201:
 
-                AuditLogger.create_user(username)
+                print("\nUser Created Successfully.")
 
-                print("\n✅ User Created Successfully!")
+                AuditLogger.info(
+                    f"Created user '{username}'"
+                )
 
             else:
 
-                print("\n❌ Failed to Create User")
-
-                print("Status :", response.status_code)
-
+                print("\nFailed to create user.")
                 print(response.text)
 
-        # ===========================
+        # -----------------------------------
+        # SEARCH USER
+        # -----------------------------------
+        elif choice == "3":
+
+            username = input("\nEnter Username : ")
+
+            users = users_service.search_user(username)
+
+            if len(users) == 0:
+
+                print("\nNo user found.")
+
+            else:
+
+                print("\nUser Found\n")
+
+                for user in users:
+
+                    print("----------------------------")
+                    print("ID       :", user.get("id"))
+                    print("Username :", user.get("username"))
+                    print("Email    :", user.get("email"))
+                    print("Enabled  :", user.get("enabled"))
+
+                AuditLogger.info(
+                    f"Searched user '{username}'"
+                )
+
+        # -----------------------------------
+        # DISABLE USER
+        # -----------------------------------
+        elif choice == "4":
+
+            print("\nComing in Lab 9...")
+
+        # -----------------------------------
+        # DELETE USER
+        # -----------------------------------
+        elif choice == "5":
+
+            print("\nComing in Lab 10...")
+
+        # -----------------------------------
         # EXIT
-        # ===========================
+        # -----------------------------------
         elif choice == "6":
 
             print("\nGood Bye!\n")
-
             break
 
-        # ===========================
-        # OTHER OPTIONS
-        # ===========================
         else:
 
-            print("\n🚧 Feature Coming Soon...\n")
+            print("\nInvalid Option")
 
 
 if __name__ == "__main__":

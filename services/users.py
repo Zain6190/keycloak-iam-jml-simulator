@@ -33,6 +33,20 @@ class UserService:
         return None
 
     # ----------------------------
+    # Search User By Username
+    # ----------------------------
+    def search_user(self, username):
+
+        response = self.api.get(
+            f"/admin/realms/{REALM}/users?username={username}"
+        )
+
+        if response.status_code == 200:
+            return response.json()
+
+        return []
+
+    # ----------------------------
     # Create User (JOINER)
     # ----------------------------
     def create_user(self, username, email, password):
