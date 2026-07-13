@@ -115,8 +115,22 @@ def main():
         # -----------------------------------
         elif choice == "4":
 
-            print("\nComing in Lab 9...")
+            user_id = input("\nEnter User ID : ")
 
+            response = users_service.disable_user(user_id)
+
+            if response.status_code == 204:
+
+                print("\nUser Disabled Successfully.")
+
+                AuditLogger.info(
+                    f"Disabled user '{user_id}'"
+                )
+
+            else:
+
+                print("\nFailed to disable user.")
+                print(response.text)
         # -----------------------------------
         # DELETE USER
         # -----------------------------------

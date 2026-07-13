@@ -45,6 +45,37 @@ class UserService:
             return response.json()
 
         return []
+        # ----------------------------
+    # Disable User
+    # ----------------------------
+    def disable_user(self, user_id):
+
+        payload = {
+            "enabled": False
+        }
+
+        response = self.api.put(
+            f"/admin/realms/{REALM}/users/{user_id}",
+            payload
+        )
+
+        return response
+
+    # ----------------------------
+    # Enable User
+    # ----------------------------
+    def enable_user(self, user_id):
+
+        payload = {
+            "enabled": True
+        }
+
+        response = self.api.put(
+            f"/admin/realms/{REALM}/users/{user_id}",
+            payload
+        )
+
+        return response
 
     # ----------------------------
     # Create User (JOINER)
