@@ -2,7 +2,7 @@
 # KEYCLOAK CONFIGURATION
 # ==============================
 
-KEYCLOAK_URL = "http://192.168.1.9:8080"
+KEYCLOAK_URL = "http://192.168.20.8:8080"
 
 # Your realm
 REALM = "zain"

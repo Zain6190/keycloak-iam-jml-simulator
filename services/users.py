@@ -75,6 +75,24 @@ class UserService:
         return response
 
     # ----------------------------
+    # Update User
+    # ----------------------------
+    def update_user(self, user_id, username, email):
+
+        payload = {
+            "username": username,
+            "email": email,
+            "enabled": True
+        }
+
+        response = self.api.put(
+            f"/admin/realms/{REALM}/users/{user_id}",
+            payload
+        )
+
+        return response
+
+    # ----------------------------
     # Disable User
     # ----------------------------
     def disable_user(self, user_id):

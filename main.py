@@ -31,9 +31,10 @@ def main():
         print("1. List Users")
         print("2. Create User")
         print("3. Search User")
-        print("4. Disable User")
-        print("5. Delete User")
-        print("6. Exit")
+        print("4. Update User")
+        print("5. Disable User")
+        print("6. Delete User")
+        print("7. Exit")
 
         choice = input("\nSelect Option: ")
 
@@ -111,9 +112,52 @@ def main():
                 )
 
         # -----------------------------------
-        # DISABLE USER
+        # UPDATE USER
         # -----------------------------------
         elif choice == "4":
+
+            username = input("\nEnter Username : ")
+
+            users = users_service.search_user(username)
+
+            if len(users) == 0:
+
+                print("\nUser not found.")
+
+            else:
+
+                user = users[0]
+
+                print("\nCurrent Information")
+                print("----------------------------")
+                print("Username :", user.get("username"))
+                print("Email    :", user.get("email"))
+
+                new_email = input("\nNew Email : ")
+
+                response = users_service.update_user(
+                    user.get("id"),
+                    user.get("username"),
+                    new_email
+                )
+
+                if response.status_code == 204:
+
+                    print("\nUser Updated Successfully.")
+
+                    AuditLogger.info(
+                        f"Updated user '{username}'"
+                    )
+
+                else:
+
+                    print("\nFailed to update user.")
+                    print(response.text)
+
+        # -----------------------------------
+        # DISABLE USER
+        # -----------------------------------
+        elif choice == "5":
 
             user_id = input("\nEnter User ID : ")
 
@@ -131,10 +175,11 @@ def main():
 
                 print("\nFailed to disable user.")
                 print(response.text)
+
         # -----------------------------------
         # DELETE USER
         # -----------------------------------
-        elif choice == "5":
+        elif choice == "6":
 
             user_id = input("\nEnter User ID : ")
 
@@ -156,7 +201,7 @@ def main():
         # -----------------------------------
         # EXIT
         # -----------------------------------
-        elif choice == "6":
+        elif choice == "7":
 
             print("\nGood Bye!\n")
             break
