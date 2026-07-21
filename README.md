@@ -1,194 +1,498 @@
-# 🔐 Keycloak IAM & JML Lifecycle Simulator
+# 🔐 Mini Identity Governance & Administration (IGA) Platform using Keycloak
 
-A modular Python application that demonstrates **Identity and Access Management (IAM)** concepts using the **Keycloak Admin REST API**.
+A modular Python application that demonstrates **Identity Governance & Administration (IGA)** concepts by integrating with **Keycloak** through the **Admin REST API**.
 
-The project simulates enterprise identity lifecycle management — **Joiner → Mover → Leaver (JML)** — following a clean, service-oriented architecture inspired by commercial IAM platforms such as **Fischer IAM, SailPoint, Microsoft Entra ID, and Okta**.
-
----
-
-## 📖 Overview
-
-This simulator connects to a running Keycloak instance via its Admin REST API and provides a menu-driven CLI to manage the full identity lifecycle of users — from onboarding (Joiner) to role/department changes (Mover) to offboarding (Leaver). It's built as a hands-on learning project to understand enterprise IAM/IGA concepts before working with commercial platforms.
+This project simulates how enterprise IAM platforms such as **Fischer IAM**, **midPoint**, **SailPoint**, **Okta**, and **Microsoft Entra ID** manage digital identities while using **Keycloak as the Identity Provider (IdP)** for authentication and authorization.
 
 ---
 
-## ✨ Features
+# 📖 Project Overview
 
-- 🔑 **JWT Authentication** — secure admin login against Keycloak
-- 🌐 **Keycloak Admin REST API** integration
-- 👤 **User Management** — create, search, update, disable, and delete users
-- 📝 **Audit Logging** — every action recorded for traceability
-- 💻 **Menu-Driven CLI** — simple, interactive terminal interface
-- 🧩 **Modular, Enterprise-Style Architecture** — clean separation of config, core, services, and lifecycle layers
+The goal of this project is to build a **Mini Identity Governance Platform** rather than simply interacting with Keycloak.
+
+Instead of manually creating users from the Keycloak Admin Console, this application automates Identity Administration through a layered architecture and enterprise design principles.
+
+The project currently supports complete User Lifecycle Management and is being extended toward:
+
+- Identity Governance (IGA)
+- RBAC
+- Joiner • Mover • Leaver (JML)
+- LDAP Integration
+- Approval Workflows
+- Reporting
+- Identity Automation
 
 ---
 
-## 🗂 Project Structure
+# 🏗 Architecture
 
 ```
-keycloak-iam-jml-simulator
+                    Users
+                      │
+                      ▼
+           Mini IGA Platform (Python)
+                      │
+         Business Logic & Workflows
+                      │
+             Keycloak Admin REST API
+                      │
+                      ▼
+                Keycloak Server
+          (Authentication & Authorization)
+                      │
+                      ▼
+          React Applications / APIs
+```
+
+Keycloak is used as the Identity Provider while this project provides the governance and administration layer.
+
+---
+
+# ✨ Features
+
+## Authentication
+
+- JWT Authentication
+- OAuth2 Admin Login
+- Keycloak Admin REST API
+- Secure Token Management
+
+---
+
+## User Management
+
+- List Users
+- Create Users
+- Search Users
+- Update Users
+- Disable Users
+- Delete Users
+
+---
+
+## Identity Lifecycle
+
+Current:
+
+- Joiner (Provision User)
+
+Upcoming:
+
+- Mover
+- Leaver
+
+---
+
+## Audit Logging
+
+Every administrative action is logged.
+
+Examples:
+
+- Login
+- Create User
+- Search User
+- Update User
+- Disable User
+- Delete User
+
+---
+
+## Enterprise Project Architecture
+
+The project follows a layered architecture inspired by enterprise IAM products.
+
+```
+Presentation Layer
+        │
+        ▼
+Menus
+        │
+        ▼
+Operations
+        │
+        ▼
+Services
+        │
+        ▼
+REST API Client
+        │
+        ▼
+Keycloak
+```
+
+This separation makes the project scalable and easy to maintain.
+
+---
+
+# 🗂 Project Structure
+
+```
+keycloak-iam-jml-simulator/
+
 │
 ├── config/
-│   ├── __init__.py
-│   └── settings.py          # Environment & Keycloak connection settings
+│   ├── settings.py
 │
 ├── core/
-│   ├── auth.py               # JWT token acquisition & refresh
-│   ├── api_client.py         # Base REST client for Keycloak Admin API
-│   ├── logger.py             # Audit logging setup
-│   └── __init__.py
+│   ├── auth.py
+│   ├── api_client.py
+│   ├── logger.py
 │
-├── services/
-│   └── users.py              # User CRUD operations
+├── menus/
+│   ├── main_menu.py
+│   ├── user_menu.py
+│   ├── group_menu.py
+│   ├── role_menu.py
+│   └── jml_menu.py
+│
+├── operations/
+│   ├── users/
+│   │      ├── list_users.py
+│   │      ├── create_user.py
+│   │      ├── search_user.py
+│   │      ├── update_user.py
+│   │      ├── disable_user.py
+│   │      └── delete_user.py
+│   │
+│   ├── groups/
+│   ├── roles/
+│   └── reports/
 │
 ├── lifecycle/
-│   ├── joiner.py              # Onboarding workflow
-│   ├── mover.py                # Department/role change workflow
-│   ├── leaver.py                # Offboarding workflow
-│   └── simulator.py            # Orchestrates JML workflows
+│   ├── joiner.py
+│   ├── mover.py
+│   ├── leaver.py
+│   └── simulator.py
 │
-├── logs/
-│   └── audit.log
+├── services/
+│   ├── users.py
+│   ├── groups.py
+│   ├── roles.py
 │
 ├── utils/
-│   └── helpers.py
 │
-├── main.py                # CLI entry point
+├── logs/
+│
+├── README.md
 ├── requirements.txt
-├── .gitignore
-└── README.md
+└── main.py
 ```
 
 ---
 
-## 🛠 Tech Stack
+# 🛠 Technology Stack
 
-| Category        | Tools                                  |
-|------------------|-----------------------------------------|
-| Language         | Python 3.13                             |
-| IAM Platform     | Keycloak                                |
-| Containerization | Docker                                  |
-| API              | REST, JWT                               |
-| HTTP Client      | `requests`                              |
-| Dev Environment  | VS Code, Oracle VirtualBox, Kali Linux  |
-
----
-
-## 🔄 Authentication Workflow
-
-```
-Admin Login → Request Access Token → Keycloak Authentication
-     → JWT Access Token → Python Application → Admin REST API → Manage Users
-```
+| Category | Technology |
+|-----------|------------|
+| Language | Python 3 |
+| Authentication | Keycloak |
+| Protocols | OAuth2, OpenID Connect (OIDC), JWT |
+| API | Keycloak Admin REST API |
+| Frontend | React (Authentication) |
+| HTTP Client | Requests |
+| Containerization | Docker |
+| Operating System | Kali Linux |
+| Virtualization | Oracle VirtualBox |
+| Version Control | Git & GitHub |
 
 ---
 
-## 👥 User Management Workflow
+# 🔐 Authentication Flow
 
 ```
-Admin Login → Access Token → User Service
-     → [ List | Create | Search | Update | Disable | Delete ] → Audit Log
+Administrator
+
+      │
+
+      ▼
+
+Python IAM Platform
+
+      │
+
+Authenticate
+
+      │
+
+      ▼
+
+Keycloak
+
+      │
+
+Returns JWT Access Token
+
+      │
+
+      ▼
+
+Admin REST API
+
+      │
+
+Manage Users
 ```
 
 ---
 
-## 🔁 JML Lifecycle
+# 👤 User Management Workflow
 
-**Joiner**
-`Provision User → Assign Groups → Assign Roles`
+```
+Login
 
-**Mover**
-`Department Change → Revoke Old Access → Assign New Access`
+↓
 
-**Leaver**
-`Disable Account → Grace Period → Delete Account`
+Access Token
+
+↓
+
+User Service
+
+↓
+
+List Users
+
+↓
+
+Create User
+
+↓
+
+Search User
+
+↓
+
+Update User
+
+↓
+
+Disable User
+
+↓
+
+Delete User
+
+↓
+
+Audit Log
+```
 
 ---
 
-## 🚀 Getting Started
+# 🔁 JML Lifecycle
 
-### Prerequisites
-- Python 3.13+
-- Docker (for running Keycloak locally)
-- A running Keycloak instance with an admin realm configured
+### Joiner
 
-### Installation
+```
+New Employee
+
+↓
+
+Create User
+
+↓
+
+Assign Group
+
+↓
+
+Assign Role
+```
+
+---
+
+### Mover (Upcoming)
+
+```
+Department Change
+
+↓
+
+Update Groups
+
+↓
+
+Update Roles
+```
+
+---
+
+### Leaver (Upcoming)
+
+```
+Disable User
+
+↓
+
+Remove Access
+
+↓
+
+Delete User
+```
+
+---
+
+# 🚀 Running the Project
+
+## Clone Repository
+
 ```bash
-git clone https://github.com/<your-username>/keycloak-iam-jml-simulator.git
-cd keycloak-iam-jml-simulator
+git clone https://github.com/Zain6190/keycloak-iam-jml-simulator.git
+```
+
+---
+
+## Install Requirements
+
+```bash
 pip install -r requirements.txt
 ```
 
-### Configuration
-Update `config/settings.py` (or a `.env` file) with your Keycloak server URL, realm, and admin credentials.
+---
 
-### Run
+## Configure
+
+Update:
+
+```
+config/settings.py
+```
+
+Configure:
+
+- Keycloak URL
+- Realm
+- Admin Username
+- Admin Password
+
+---
+
+## Start Keycloak
+
+Run Keycloak using Docker.
+
+---
+
+## Run Application
+
 ```bash
 python main.py
 ```
 
 ---
 
-## 📊 Current Progress
+# 📊 Current Progress
 
-| Feature              | Status |
-|-----------------------|--------|
-| Authentication        | ✅ |
-| JWT Token              | ✅ |
-| Admin REST API         | ✅ |
-| Modular Architecture   | ✅ |
-| Audit Logging          | ✅ |
-| List Users             | ✅ |
-| Create Users           | ✅ |
-| Search Users           | ⬜ |
-| Update Users           | ⬜ |
-| Disable Users          | ⬜ |
-| Delete Users           | ⬜ |
-| Groups                 | ⬜ |
-| Roles                  | ⬜ |
-| Joiner Workflow        | ⬜ |
-| Mover Workflow         | ⬜ |
-| Leaver Workflow        | ⬜ |
+| Module | Status |
+|----------|--------|
+| JWT Authentication | ✅ |
+| Admin REST API | ✅ |
+| User CRUD | ✅ |
+| Audit Logging | ✅ |
+| Enterprise Architecture | ✅ |
+| Menu System | ✅ |
+| Operations Layer | ✅ |
+| Services Layer | ✅ |
+| Groups | 🚧 |
+| Roles | 🚧 |
+| RBAC | 🚧 |
+| Joiner Workflow | 🚧 |
+| Mover Workflow | 🚧 |
+| Leaver Workflow | 🚧 |
+| Reports | 🚧 |
+| LDAP Integration | 🚧 |
 
 ---
 
-## 🎯 Learning Objectives
+# 🎯 Learning Objectives
 
-This project is a practical exploration of:
+This project explores:
 
-- Identity and Access Management (IAM)
+- Identity & Access Management (IAM)
 - Identity Governance & Administration (IGA)
 - Keycloak Administration
-- REST API Integration
+- OAuth2
+- OpenID Connect (OIDC)
 - JWT Authentication
-- Enterprise Project Architecture & Service Layer Pattern
+- REST API Integration
+- Enterprise Software Architecture
+- Service Layer Pattern
 - Audit Logging
-- User Lifecycle Management (JML)
-- RBAC Concepts
+- User Lifecycle Management
+- Role-Based Access Control (RBAC)
+- Identity Automation
 
 ---
 
-## 🔮 Future Enhancements
+# 🚀 Roadmap
 
-- Group & Role Management
-- RBAC Engine
-- CSV Bulk User Import
-- Flask REST Backend
+## Phase 1 ✅
+
+- Authentication
+- User CRUD
+- Logging
+- Modular Architecture
+
+---
+
+## Phase 2 (Current)
+
+- Group Management
+- RBAC
+- User Membership
+
+---
+
+## Phase 3
+
+- Role Management
+- Client Roles
+- Realm Roles
+
+---
+
+## Phase 4
+
+- Joiner Workflow
+- Mover Workflow
+- Leaver Workflow
+
+---
+
+## Phase 5
+
+- LDAP Integration
+- Identity Synchronization
+
+---
+
+## Phase 6
+
 - React Admin Dashboard
 - Reporting Dashboard
-- Workflow Engine
+- Approval Workflow
 - Email Notifications
 
 ---
 
-## 👤 Author
+# 👨‍💻 Author
 
 **Zain Ul Abideen**
-BS Computer Science — Air University, Islamabad
+
+BS Computer Science
+
 Learning Enterprise Identity & Access Management
+
+GitHub:
+https://github.com/Zain6190
+
+LinkedIn:
+(Add your LinkedIn profile)
 
 ---
 
-## 📄 License
+# 📜 License
 
 This project is licensed under the MIT License.
